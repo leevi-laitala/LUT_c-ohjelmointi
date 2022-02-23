@@ -27,10 +27,12 @@
 #define FN_MAX 30 // Filename max length
 #define DATE_MAX 20 // Date string max length
 
+typedef struct tm tm;
+
 typedef struct
 {
     char date[DATE_MAX]; // Format dd.mm.yyyy HH:MM
-    struct tm time;
+    tm time;
     char week;
 
     unsigned consumption;

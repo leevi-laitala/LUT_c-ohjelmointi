@@ -184,6 +184,9 @@ Data* dataParse(char *str) // Parses data from string
     // and save each "column" to their own variables
     strcpy(data->date, strtok(str, s));
     data->week          = (char)atoi(strtok(NULL, s));
+
+    
+
     data->consumption   = (unsigned)atoi(strtok(NULL, s));
     data->solar         = (unsigned)atoi(strtok(NULL, s));
     data->wind          = (unsigned)atoi(strtok(NULL, s));
