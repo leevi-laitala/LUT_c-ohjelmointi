@@ -185,8 +185,6 @@ Data* dataParse(char *str) // Parses data from string
     strcpy(data->date, strtok(str, s));
     data->week          = (char)atoi(strtok(NULL, s));
 
-    
-
     data->consumption   = (unsigned)atoi(strtok(NULL, s));
     data->solar         = (unsigned)atoi(strtok(NULL, s));
     data->wind          = (unsigned)atoi(strtok(NULL, s));
@@ -200,7 +198,7 @@ Data* dataParse(char *str) // Parses data from string
 
 void dataAnalyze(Node *head, AnalysisResult *res) // Analyzes data in linked list
 {
-    char monthStr[2] = { 0 }; // Initialize small buffer for month number parsing
+    //char monthStr[2] = { 0 }; // Initialize small buffer for month number parsing
 
     // For comparisons init max with small value, and min with large value
     res->max = 0;
@@ -209,6 +207,8 @@ void dataAnalyze(Node *head, AnalysisResult *res) // Analyzes data in linked lis
     Node *iter = head; // Init iterating node to begin from head
     while (iter->next != NULL)
     {
+        dataParseTime(iter->data->date, &iter->data->time); // Parse date
+
         res->total += iter->data->consumption; // Add total consumption to sum
         
         if (res->max < iter->data->consumption) // Compare consumption to previous max
@@ -226,15 +226,10 @@ void dataAnalyze(Node *head, AnalysisResult *res) // Analyzes data in linked lis
         for (size_t i = 0; i < 12; ++i) // Initialize each node's month array to contain month numbers
             res->monthdata[i].month = i + 1;
 
-        monthStr[0] = iter->data->date[3]; // Parse month from string using indices
-        monthStr[1] = iter->data->date[4];
+        unsigned index = iter->data->time.tm_mon - 1;
 
-        unsigned index = atoi(monthStr) - 1;
-        //res->monthdata[index].month = index;
+        Data *cur = iter->data; // Alias for sum calculation
 
-        Data *cur = iter->data; // Alias
-
-        // Calculate sum
         res->monthdata[index].total += cur->solar + cur->wind + cur->hydro + cur->nuclear + cur->total + cur->thermal;
 
         res->amount++; // Amount tells how many nodes has been processed

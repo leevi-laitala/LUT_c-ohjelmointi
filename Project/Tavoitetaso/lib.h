@@ -88,4 +88,6 @@ void dataAnalyze(Node *head, AnalysisResult *res);
 // Misc
 void error(char *msg);
 
+void dataParseTime(char *str, struct tm *t);
+
 #endif // LIB_H

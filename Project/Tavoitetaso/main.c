@@ -15,6 +15,7 @@
 /* Harjoitustyö - Perustaso, main.c */ 
 
 #include "lib.h"
+#include "tlib.c"
 
 int main(void)
 {
@@ -34,11 +35,15 @@ int main(void)
         {{ 0 }} // Initialize array with zeroes
     };
 
+    WeekMatrix weekMatrix = { 0, 0, NULL };
+    matrixInit(&weekMatrix, 6, 1); // Init with 1x6 matrix, 6 for 6 data elements
+
+
     char exit = 0; // If non zero, exit from while
     char opt[1]; // Container for user option
     while (!exit)
     {
-        printf("Valitse haluamasi toiminto:\n1) Lue tiedosto\n2) Analysoi tiedot\n3) Kirjoita tulokset\n0) Lopeta\nAnna valintasi: ");
+        printf("Valitse haluamasi toiminto:\n1) Lue tiedosto\n2) Analysoi tiedot\n3) Kirjoita tulokset\n4) Laske viikottaiset tulokset\n0) Lopeta\nAnna valintasi: ");
         scanf("%s", opt);
 
         switch (opt[0])
@@ -57,12 +62,16 @@ int main(void)
             case '3':
                 fileWrite(&analysisResult);
                 break;
+            case '4':
+                dataAnalyzeWeek(head, &weekMatrix);
+                break;
             default:
                 printf("Tuntematon valinta.\n\n");
         }
     }
 
     listClear(head); // Free heap allocations
+    matrixClear(&weekMatrix);
     printf("\nKiitos ohjelman käytöstä.\n");
 
     return 0;
