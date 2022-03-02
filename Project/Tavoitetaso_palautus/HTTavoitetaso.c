@@ -12,10 +12,9 @@
  * - ... 
  */ 
 /*************************************************************************/ 
-/* Harjoitustyö - Tavoitetaso, main.c */ 
+/* Harjoitustyö - Tavoitetaso, HTTavoitetaso.c */ 
 
-#include "lib.h"
-#include "tlib.c"
+#include "HTPerusKirjasto.h"
 
 int main(void)
 {
@@ -24,28 +23,22 @@ int main(void)
     listInit(&head);
 
     // Init analysis result container
-    AnalysisResult analysisResult = {
-        0, // Amount
-        0, // Total (sum) 
-        0.0, // Average
-        0, // Max
-        (unsigned)-1, // Min
-        NULL, // Pointer to max node
-        NULL, // Pointer to min node
-        {{ 0 }} // Initialize array with zeroes
-    };
+    AnalysisResult analysisResult = { 0, 0, 0.0, 0, (unsigned)-1, NULL, NULL, {{ 0 }} };
 
-    WeekMatrix weekMatrix = { 0, 0, NULL };
-    matrixInit(&weekMatrix, 6, 1); // Init with 1x6 matrix, 6 for 6 data elements
+    // Used for while loop. If non zero, exit from loop
+    char exit = 0;
 
-    char exit = 0; // If non zero, exit from while
-    char opt[1]; // Container for user option
+    // User input
+    char buf[FN_MAX] = { 0 };
+
     while (!exit)
     {
-        printf("Valitse haluamasi toiminto:\n1) Lue tiedosto\n2) Analysoi tiedot\n3) Kirjoita tulokset\n4) Laske viikottaiset tulokset\n0) Lopeta\nAnna valintasi: ");
-        scanf("%s", opt);
+        printf("Valitse haluamasi toiminto:\n1) Lue tiedosto\n2) Analysoi tiedot\n3) Kirjoita tulokset\n4) Laske viikoittaiset tulokset\n0) Lopeta\nAnna valintasi: ");
 
-        switch (opt[0])
+        fflush(stdout);
+        fgets(buf, sizeof(buf) / sizeof(buf[0]), stdin);
+
+        switch (buf[0])
         {
             case '0':
                 ++exit; // Makes exit non zero, so while loop will break
@@ -62,16 +55,14 @@ int main(void)
                 fileWrite(&analysisResult);
                 break;
             case '4':
-                dataAnalyzeWeek(head, &weekMatrix);
-                fileWriteWeekly(&weekMatrix);
+                fileWriteWeekly(head);
                 break;
             default:
-                printf("Tuntematon valinta.\n\n");
+                printf("Tuntematon valinta, yritä uudestaan.\n\n");
         }
     }
 
-    listClear(head); // Free heap allocations
-    matrixClear(&weekMatrix);
+    listClear(head); // Free list's heap allocations
     printf("\nKiitos ohjelman käytöstä.\n");
 
     return 0;

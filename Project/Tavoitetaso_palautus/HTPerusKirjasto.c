@@ -12,9 +12,9 @@
  * - ... 
  */ 
 /*************************************************************************/ 
-/* Harjoitustyö - Tavoitetaso, lib.c */ 
+/* Harjoitustyö - Tavoitetaso, HTPerusKirjasto.c */ 
 
-#include "lib.h"
+#include "HTPerusKirjasto.h"
 
 //
 //  *** File IO ***
@@ -23,7 +23,11 @@
 void fileGetFilename(char buf[FN_MAX], char *prompt)
 {
     printf(prompt);
-    scanf("%s", buf);
+    fflush(stdout);
+    fgets(buf, FN_MAX, stdin);
+    
+    size_t s = strlen(buf);
+    buf[s - 1] = '\0';
 }
 
 void fileRead(Node **head)
@@ -40,7 +44,7 @@ void fileRead(Node **head)
     // Open file stream
     FILE *file;
     if ((file = fopen(fname, "r")) == NULL)
-        error("Virhe tiedoston lukemisessa.");
+        error("Tiedoston avaaminen epäonnistui, lopetetaan");
     
     // Init line buffer
     char line[LINE_MAX];
@@ -62,6 +66,12 @@ void fileRead(Node **head)
 
 void fileWrite(AnalysisResult *res)
 {
+    if (res->amount == 0)
+    {
+        printf("Ei kirjoitettavia tietoja, analysoi tiedot ennen tallennusta.\n\n");
+        return;
+    }
+
     // Get filename
     char fname[FN_MAX] = { 0 };
     fileGetFilename(fname, "Anna kirjoitettavan tiedoston nimi: ");
@@ -87,7 +97,7 @@ void fileWrite(AnalysisResult *res)
     // Open file stream
     FILE *file;
     if ((file = fopen(fname, "w")) == NULL)
-        error("Virhe tiedoston kirjoittamisessa.");
+        error("Tiedoston avaaminen epäonnistui, lopetetaan");
 
     // Iterate through output buffer
     for (size_t i = 0; i < c; ++i)
@@ -198,7 +208,11 @@ Data* dataParse(char *str) // Parses data from string
 
 void dataAnalyze(Node *head, AnalysisResult *res) // Analyzes data in linked list
 {
-    //char monthStr[2] = { 0 }; // Initialize small buffer for month number parsing
+    if (head->next == NULL)
+    {
+        printf("Ei analysoitavaa, lue tiedosto ennen analyysiä.\n\n");
+        return;
+    }
 
     // For comparisons init max with small value, and min with large value
     res->max = 0;

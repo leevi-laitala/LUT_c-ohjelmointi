@@ -1,5 +1,5 @@
-#ifndef LIB_H
-#define LIB_H
+#ifndef HTPERUSKIRJASTO_H
+#define HTPERUSKIRJASTO_H
 
 /*************************************************************************/ 
 /* CT60A2500 C-ohjelmoinnin perusteet  
@@ -15,7 +15,7 @@
  * - ... 
  */ 
 /*************************************************************************/ 
-/* Harjoitustyö - Tavoitetaso, lib.h */ 
+/* Harjoitustyö - Tavoitetaso, HTPerusKirjasto.h */ 
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,8 +27,13 @@
 #define FN_MAX 30 // Filename max length
 #define DATE_MAX 20 // Date string max length
 
+// Handy macros
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 typedef struct tm tm;
 
+// Datatype where files are parsed
 typedef struct
 {
     char date[DATE_MAX]; // Format dd.mm.yyyy HH:MM
@@ -44,6 +49,7 @@ typedef struct
     int thermal; // Can be negative
 } Data;
 
+// Linked list node
 typedef struct Node Node;
 
 struct Node
@@ -52,12 +58,14 @@ struct Node
     Node *next;
 };
 
+// Month and it's sum
 typedef struct
 {
     char month;
     unsigned long total;
 } MonthData;
 
+// Container for analysis results
 typedef struct
 {
     unsigned amount;
@@ -69,6 +77,15 @@ typedef struct
     Data *maxAt;
     MonthData monthdata[12];
 } AnalysisResult;
+
+// Matrix container, to keep track of it's size
+typedef struct
+{
+    unsigned width;
+    unsigned height;
+    //unsigned long *matrix; // Matrices are stored as one dimensional array of long ints
+    long int *matrix; // Matrices are stored as one dimensional array of long ints
+} WeekMatrix;
 
 // File IO
 void fileGetFilename(char buf[FN_MAX], char *prompt);
@@ -88,6 +105,20 @@ void dataAnalyze(Node *head, AnalysisResult *res);
 // Misc
 void error(char *msg);
 
-void dataParseTime(char *str, struct tm *t);
+//
+// *** Tavotietaso function forward declarations ***
+//
+void dataParseTime(char *str, tm *t);
+void dataAnalyzeWeek(Node *head, WeekMatrix *mx);
 
-#endif // LIB_H
+void fileWriteWeekly(Node *head);
+
+void matrixInit(WeekMatrix *mx, unsigned width, unsigned height);
+void matrixPrint(WeekMatrix *mx);
+void matrixClear(WeekMatrix *mx);
+void matrixResize(WeekMatrix *mx, unsigned width, unsigned height);
+void matrixAdd(WeekMatrix *mx, unsigned row, unsigned col, long int data);
+void matrixAddRelative(WeekMatrix *mx, unsigned row, unsigned col, long int data);
+long int matrixGet(WeekMatrix *mx, unsigned row, unsigned col);
+
+#endif // HTPERUSKIRJASTO_H

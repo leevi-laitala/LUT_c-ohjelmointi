@@ -1,5 +1,5 @@
 CC = gcc
-ARGS = -Wall -std=c99
+ARGS = -Wall -std=c99 -O3
 APPNAME = tavoitetaso
 
 $(APPNAME): main.o lib.o
